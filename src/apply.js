@@ -196,10 +196,21 @@ async function apply() {
     await page.locator("#con_cbOneMan").check();
   } catch (error) {}
   await page.locator("#con_btnToStep31").click();
-  // await page.evaluate(() => {
-  //   document.documentElement.style.transform = "scale(0.5)";
-  //   document.documentElement.style.transformOrigin = "top left";
-  // });
+
+  if (process.env.TEST_MODE === "true") {
+    console.log("🧪 測試模式：自動關閉瀏覽器並回傳 0");
+    await browser.close();
+  } else {
+    console.log("\n✅ 自動填寫完成！請手動檢查資料、輸入驗證碼並提交。");
+    console.log("💡 提示：手動關閉瀏覽器後，程式才會正式結束。");
+    // 保持瀏覽器開啟，直到使用者手動關閉
+    await page.waitForEvent("close", { timeout: 0 });
+  }
 }
 
-apply().catch(console.error);
+apply()
+  .then(() => process.exit(0))
+  .catch((err) => {
+    console.error("執行過程中發生錯誤:", err);
+    process.exit(1);
+  });

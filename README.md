@@ -53,8 +53,6 @@ npx playwright install chromium
 2.  將其中的個人資料（姓名、證號、生日、聯絡電話等）替換為實際內容。
 3.  儲存檔案。
 
-*(註：原本的 `cp ... src/application.json` 已不再需要，`main.py` 會引導您選擇範本。)*
-
 ---
 
 ## 🚀 如何執行
@@ -71,6 +69,10 @@ npx playwright install chromium
 
 ---
 
-## 📄 授權 (License)
+## 📄 授權與免責聲明 (License & Disclaimer)
 
-[MIT License](LICENSE)
+本專案採非商業性使用授權。
+- **禁止商業行為**：嚴禁任何形式的營利代辦或商業化使用。
+- **免責聲明**：本工具僅供參考，使用者需自行承擔申請過程中的所有風險（如申請失敗、帳號權益受損等），作者概不負責。
+
+詳情請參閱 [LICENSE](LICENSE) 檔案。
