@@ -4,12 +4,6 @@
 
 ⚠️ **本工具不會自動提交表單，也不會破解驗證碼 (reCAPTCHA)。**
 
-## 🎥 示範影片
-
-👉 [在 YouTube 觀看完整示範影片](https://youtu.be/_c_niUu43xU)
-
-[![Watch the demo video](./taiwan-hiking-form-filler-demo-2025-0504.png)](https://youtu.be/_c_niUu43xU)
-
 ---
 
 ## 🔍 功能特色
