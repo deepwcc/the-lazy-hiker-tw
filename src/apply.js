@@ -1,6 +1,10 @@
 const { chromium } = require("playwright");
 const readline = require("readline");
-const data = require("./application.json");
+
+// 從環境變數讀取資料，如果沒有則預設讀取本地 application.json (相容舊用法)
+const data = process.env.APPLICATION_DATA 
+  ? JSON.parse(process.env.APPLICATION_DATA) 
+  : require("./application.json");
 
 async function promptUserInput(promptText) {
   const rl = readline.createInterface({
@@ -49,29 +53,14 @@ async function apply() {
   /**
    *
    */
-  const agreements = [
-    "請注意，領隊及隊員名單如有外籍人士，請提醒攜帶具有GPS功能之通訊器材，手機請打開國際漫遊之通訊及簡訊功能，以利災害應變與聯繫。",
-    "確認已於申請前詳閱「進入玉山國家公園生態保護區申請案件個人資料運用說明」，已轉知並取得全體隊員同意使用當事人個人資料辦理入園申請相關事宜。",
-    "確認已於申請前詳閱並明瞭「申請及入園注意事項」及「申辦規定與須知」，並轉知全體隊員瞭解並遵守入園相關規定。並提醒若委由他人代辦，亦應檢視是否完成許可程序(如個人資料、行程規劃等均應詳加檢視)，若疏忽未檢視，難謂無過失之責。",
-    "入園期間應攜帶入園許可證及身分證明文件正本俾利查核，未攜帶身分證明文件或所攜帶身分證明文件與入園許可證名冊不符者，禁止其入園。已入園者得令其離園。不聽制止或未依前段規定入園者，得依國家公園法第 19條規定處罰。",
-    "為維護安全並避免意外，請勿擅自進入三六九山莊施工工區，住宿請依規定申請三六九臨時營地。",
-    "請注意，領隊及隊員名單如有外籍人士，請提醒攜帶具有GPS",
-    "申請人應瞭解並填具所有正確的隊員資料與行程計畫。如明知為不實或冒用他人資料填載入園申請之事項，已構成刑法第 210 條偽造文書罪嫌，或構成刑法第 214",
-    "欲申請雪山西稜線之隊伍，請於申請前詳閱230林道注意事項。",
-    "園區內禁止使用器具以外之炊煮、燃火行為；於乾燥季節期間，特別提高防火警覺，嚴防森林火災。",
-    "進入原住民族傳統領域須知： 1",
-    "入園申請隊員若具有學生身分或參加學校社團活動，請務必自行通報學校相關單位，作為緊急應變之用。",
-    "如登山隊伍有聘請嚮導或協作，請務必一併申請入園。",
-    "本人已閱讀並充分瞭解上述注意事項，並會遵守國家公園、警政署各項規定。",
-  ];
-  for (let i = 0; i < agreements.length; i++) {
-    const row = page.getByRole("row", { name: agreements[i] });
-    try {
-      await row.waitFor({ timeout: 200 }); // Wait up to 0.2s for the row to appear
-      await row.getByRole("checkbox").check();
-    } catch (e) {
-      // Skip if the row or checkbox doesn't exist or timeout occurs
-      continue;
+  /**
+   * 自動勾選頁面上所有可見的條款勾選框
+   */
+  await page.waitForTimeout(500); // 稍微等待確保勾選框載入
+  const checkboxes = await page.getByRole("checkbox").all();
+  for (const checkbox of checkboxes) {
+    if (await checkbox.isVisible()) {
+      await checkbox.check().catch(() => {});
     }
   }
   await page.getByRole("button", { name: "同意", exact: true }).click();

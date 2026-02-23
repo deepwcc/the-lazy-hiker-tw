@@ -9,8 +9,17 @@
 ## 🔍 功能特色
 
 *   **自動填表**：自動填寫隊伍、行程、領隊、隊員及留守人資料。
-*   **支援多種路線**：內建玉山、桃山、雪山等多種申請範本。
+*   **目前支援路線**：目前僅完整支援 **玉山單攻** 選項。
 *   **手動最後確認**：腳本填寫完畢後，您仍可手動檢查資料、輸入驗證碼並自行點擊提交。
+
+---
+
+## 📝 TODO List (待修復範本)
+
+以下路線範本目前尚未修復，歡迎提交 Pull Request：
+- [ ] 桃山單攻
+- [ ] 玉山主東兩天
+- [ ] 雪山主東三天
 
 ---
 
@@ -38,21 +47,18 @@ npx playwright install chromium
 ```
 
 ### 3. 設定申請資料
-將範本檔案複製為 `application.json` 並填入您的實際資料：
-```bash
-cp src/application.桃山單攻.sample.json src/application.json
-# 或者使用其他範本
-# cp src/application.玉山主東兩天.sample.json src/application.json
-```
-請編輯 `src/application.json`，將其中的個人資料（姓名、證號、生日、聯絡電話等）替換為實際內容。
+
+目前僅支援 **玉山單攻**，請先編輯範本檔案並填入您的實際資料：
+1.  開啟 `samples/application.玉山單攻.sample.json`。
+2.  將其中的個人資料（姓名、證號、生日、聯絡電話等）替換為實際內容。
+3.  儲存檔案。
+
+*(註：原本的 `cp ... src/application.json` 已不再需要，`main.py` 會引導您選擇範本。)*
 
 ---
 
 ## 🚀 如何執行
 
-您可以透過 Python (建議) 或直接使用 Node.js 來啟動工具。
-
-### 方法 A：透過 Python 執行 (推薦)
 1. 安裝 PyExecJS：
    ```bash
    pip install PyExecJS
@@ -61,11 +67,7 @@ cp src/application.桃山單攻.sample.json src/application.json
    ```bash
    python main.py
    ```
-
-### 方法 B：直接使用 Node.js 執行
-```bash
-node src/apply.js
-```
+   *執行後，請從選單中選擇 `玉山單攻 (application.玉山單攻.sample.json)`。*
 
 ---
 

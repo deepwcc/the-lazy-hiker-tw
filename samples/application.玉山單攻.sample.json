@@ -1,0 +1,48 @@
+{
+  "org": "玉山國家公園管理處",
+  "route": "2~5天(塔塔加 - 玉山線 - 塔塔加)",
+  "destination": "玉山群峰(嘉義縣-阿里山鄉)",
+  "numOfDays": 2,
+  "startDate": "2026-04-01",
+  "plan": [
+    { "spots": ["排雲登山服務中心", "塔塔加登山口", "排雲山莊"] },
+    { "spots": ["玉山主峰", "玉山東峰", "排雲山莊", "塔塔加登山口", "排雲登山服務中心"] }
+  ],
+  "watcher": {
+    "name": "xx",
+    "homePhone": "xxx",
+    "mobilePhone": "xxx",
+    "birthday": "1996-05-01",
+    "email": "xxx@gmail.com"
+  },
+  "members": [
+    {
+      "leader": true,
+      "name": "xxx",
+      "idNumber": "xxx",
+      "homePhone": "xxx",
+      "mobilePhone": "xxx",
+      "birthday": "1995-06-21",
+      "city": "台北市",
+      "district": "信義區",
+      "addressDetail": "xxx",
+      "email": "xxx@gmail.com",
+      "emergencyContactName": "xx",
+      "emergencyContactPhone": "xxx"
+    },
+    {
+      "leader": false,
+      "name": "xxx",
+      "idNumber": "xxx",
+      "homePhone": "xxx",
+      "mobilePhone": "xxxx",
+      "birthday": "1989-05-18",
+      "city": "台北市",
+      "district": "文山區",
+      "addressDetail": "xxx",
+      "email": "xxxx@gmail.com",
+      "emergencyContactName": "xxx",
+      "emergencyContactPhone": "xxxx"
+    }
+  ]
+}
