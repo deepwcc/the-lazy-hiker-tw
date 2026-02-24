@@ -1,5 +1,6 @@
 import os
 import json
+import yaml
 import asyncio
 import sys
 import re
@@ -32,14 +33,23 @@ async def apply(data=None, test_mode=None):
     if data is None:
         data_str = os.environ.get("APPLICATION_DATA")
         if data_str:
-            data = json.loads(data_str)
+            try:
+                data = yaml.safe_load(data_str)
+            except:
+                data = json.loads(data_str)
         else:
             base_path = os.path.dirname(os.path.abspath(__file__))
-            json_path = os.path.join(base_path, "application.json")
-            if os.path.exists(json_path):
-                with open(json_path, "r", encoding="utf-8") as f:
-                    data = json.load(f)
-            else:
+            # 優先找 yaml
+            for ext in ["yaml", "yml", "json"]:
+                path = os.path.join(base_path, f"application.{ext}")
+                if os.path.exists(path):
+                    with open(path, "r", encoding="utf-8") as f:
+                        if ext in ["yaml", "yml"]:
+                            data = yaml.safe_load(f)
+                        else:
+                            data = json.load(f)
+                    break
+            if not data:
                 data = {}
 
     # 如果沒有傳入 test_mode，則從環境變數讀取
@@ -51,14 +61,20 @@ async def apply(data=None, test_mode=None):
     destination = data.get("destination")
     num_of_days = data.get("numOfDays")
     plan = data.get("plan", [])
-    members = data.get("members", [])
     watcher = data.get("watcher", {})
+    leader = data.get("leader", {})
+    members_without_leader = data.get("members", [])
     start_date = data.get("startDate")
     
     is_yushan = org == "玉山國家公園管理處"
     
-    leader = next((m for m in members if m.get("leader")), None)
-    members_without_leader = [m for m in members if not m.get("leader")]
+    # 如果 leader 是空的，嘗試從 members 找 (相容舊格式)
+    if not leader and members_without_leader:
+        leader = next((m for m in members_without_leader if m.get("leader")), None)
+        members_without_leader = [m for m in members_without_leader if not m.get("leader")]
+    
+    if not leader:
+        leader = {}
 
     has_dialog = False
     has_page_error = False

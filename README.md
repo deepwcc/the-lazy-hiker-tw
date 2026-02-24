@@ -9,7 +9,7 @@
 ## 🔍 功能特色
 
 *   **自動填表**：自動填寫隊伍、行程、領隊、隊員及留守人資料。
-*   **目前支援路線**：目前僅完整支援 **玉山單攻** 選項。
+*   **目前支援路線**：目前支援 **玉山主東兩天** 與 **桃山單攻** 選項。
 *   **手動最後確認**：腳本填寫完畢後，您仍可手動檢查資料、輸入驗證碼並自行點擊提交。
 
 ---
@@ -17,8 +17,7 @@
 ## 📝 TODO List (待修復範本)
 
 以下路線範本目前尚未修復，歡迎提交 Pull Request：
-- [ ] 桃山單攻
-- [ ] 玉山主東兩天
+- [ ] 玉山單攻
 - [ ] 雪山主東三天
 
 ---
@@ -50,14 +49,14 @@ playwright install chromium
 
 為了保護您的個人隱私，請勿直接修改 `samples/` 資料夾下的範本檔案。請按照以下步驟操作：
 
-1.  **複製範本**：將 `samples/application.玉山單攻.sample.json` 複製為 `application.json` (此檔名已被加入 `.gitignore`，不會被上傳到 GitHub)。
+1.  **複製範本**：將 `samples/application.玉山主東兩天.sample.yaml` 複製為 `application.yaml` (此檔名已被加入 `.gitignore`，不會被上傳到 GitHub)。
     ```bash
-    cp samples/application.玉山單攻.sample.json application.json
+    cp samples/application.玉山主東兩天.sample.yaml application.yaml
     ```
-2.  **填寫資料**：編輯 `application.json`，將其中的個人資料（姓名、證號、生日、聯絡電話等）替換為實際內容。
+2.  **填寫資料**：編輯 `application.yaml`，將其中的個人資料（姓名、證號、生日、聯絡電話等）替換為實際內容。
 3.  **執行腳本**：目前 `main.py` 仍預設讀取範本，建議執行時手動指定資料路徑（詳見下述）。
 
-> 💡 **重要提醒**：請務必檢查 `.gitignore` 檔案中是否包含 `application.json` 或其他包含個資的檔案路徑，避免意外將敏感資訊推送到公開倉庫。
+> 💡 **重要提醒**：請務必檢查 `.gitignore` 檔案中是否包含 `application.yaml` 或其他包含個資的檔案路徑，避免意外將敏感資訊推送到公開倉庫。
 
 ---
 
@@ -68,6 +67,15 @@ playwright install chromium
    python main.py
    ```
    *腳本會優先讀取根目錄下的 `application.json`。若找不到，則會引導您從 `samples/` 中選擇範本。*
+
+2. 執行測試：
+   ```bash
+   # 執行所有測試範本
+   python test_apply.py --all
+   
+   # 依關鍵字篩選測試範本
+   python test_apply.py --filter 玉山
+   ```
 
 ---
 

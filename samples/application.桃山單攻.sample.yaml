@@ -1,0 +1,36 @@
+org: 雪霸國家公園管理處
+route: (3級) 武陵一秀或二秀 (桃山、池有山) 單日往返
+numOfDays: 1
+startDate: '2026-04-01'
+plan:
+- spots: [武陵四秀登山口, 桃山登山口, 桃山, 桃山登山口, 武陵四秀登山口] # day1
+watcher:
+  name: aaa
+  homePhone: 0900122111
+  mobilePhone: 0900122111
+  birthday: '1996-05-01'
+  email: xxx@gmail.com
+leader:
+  name: bbb
+  idNumber: A123456789
+  homePhone: 0900122112
+  mobilePhone: 0900122112
+  birthday: '2000-06-06'
+  city: 台北市
+  district: 信義區
+  addressDetail: xxx
+  email: xxx@gmail.com
+  emergencyContactName: xx
+  emergencyContactPhone: xxx
+members:
+- name: ccc
+  idNumber: A121212127
+  homePhone: 0900122113
+  mobilePhone: 0900122113
+  birthday: '2000-05-05'
+  city: 台北市
+  district: 文山區
+  addressDetail: xxx
+  email: xxxx@gmail.com
+  emergencyContactName: xxx
+  emergencyContactPhone: xxxx

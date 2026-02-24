@@ -1,6 +1,7 @@
 import os
 import sys
 import json
+import yaml
 import asyncio
 from src.apply import apply
 
@@ -9,17 +10,18 @@ def select_sample():
     samples_dir = os.path.join(base_path, "samples")
     
     # 優先尋找根目錄下的自定義申請檔案
-    custom_file = os.path.join(base_path, "application.json")
-    if os.path.exists(custom_file):
-        print(f"偵測到自定義申請檔案: {custom_file}")
-        return custom_file
+    for ext in ["yaml", "yml", "json"]:
+        custom_file = os.path.join(base_path, f"application.{ext}")
+        if os.path.exists(custom_file):
+            print(f"偵測到自定義申請檔案: {custom_file}")
+            return custom_file
 
     if not os.path.exists(samples_dir):
         print(f"錯誤：找不到 samples 資料夾 ({samples_dir})")
         return None
 
-    # 目前僅支援玉山單攻，其餘範本暫不顯示
-    supported_list = ["application.玉山單攻.sample.json"]
+    # 目前支援玉山主東兩天、桃山單攻，其餘範本暫不顯示
+    supported_list = ["application.玉山主東兩天.sample.yaml", "application.桃山單攻.sample.yaml"]
     samples = [f for f in os.listdir(samples_dir) if f in supported_list]
     
     if not samples:
@@ -34,7 +36,7 @@ def select_sample():
 
     while True:
         try:
-            choice = input(f"\n請輸入編號 (1/{len(samples)})：")
+            choice = input(f"\n請輸入編號 (1-{len(samples)})：")
             idx = int(choice) - 1
             if 0 <= idx < len(samples):
                 return os.path.join(samples_dir, samples[idx])
@@ -46,13 +48,16 @@ def select_sample():
 def run_apply(sample_path, test_mode=False):
     """
     執行自動填表腳本
-    :param sample_path: JSON 範本路徑
+    :param sample_path: 範本路徑 (JSON 或 YAML)
     :param test_mode: 是否為測試模式 (True 會在填完後自動關閉瀏覽器)
     :return: 狀態碼 (0 為成功)
     """
     try:
         with open(sample_path, "r", encoding="utf-8") as f:
-            application_data = json.load(f)
+            if sample_path.endswith((".yaml", ".yml")):
+                application_data = yaml.safe_load(f)
+            else:
+                application_data = json.load(f)
     except Exception as e:
         print(f"讀取範本失敗: {e}")
         return 1
