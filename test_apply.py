@@ -5,7 +5,9 @@ from main import run_apply
 def test_yushan_one_day():
     """
     測試：玉山單攻範本自動填寫
-    這會啟動瀏覽器跑完流程後自動關閉，並檢查回傳碼是否為 0
+    測試通過條件：
+    1. 網頁填寫過程沒有任何 dialog 或錯誤回傳 (由 apply.js 偵測並透過回傳碼反應)
+    2. apply.js 回傳 0
     """
     base_path = os.path.dirname(os.path.abspath(__file__))
     sample_path = os.path.join(base_path, "samples", "application.玉山單攻.sample.json")

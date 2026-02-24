@@ -37,8 +37,35 @@ async function apply() {
     viewport: null,
   });
   const page = await context.newPage();
-  page.once("dialog", (dialog) => {
-    console.log(`Dialog message: ${dialog.message()}`);
+  const checkPageErrors = async () => {
+    // 檢查是否有顯眼的錯誤訊息文字
+    const errorSelectors = [
+      ".error-message",
+      ".alert-danger",
+      "#error_msg",
+      "[id*='lblError']",
+      "[id*='ErrorMessage']",
+    ];
+    
+    for (const selector of errorSelectors) {
+      if (await page.locator(selector).isVisible().catch(() => false)) {
+        const text = await page.locator(selector).innerText();
+        if (text && text.trim()) {
+          console.error(`[Error] 網頁顯示錯誤訊息: ${text}`);
+          return true;
+        }
+      }
+    }
+    return false;
+  };
+
+  let hasDialog = false;
+  let hasPageError = false;
+  
+  page.on("dialog", (dialog) => {
+    const message = dialog.message();
+    console.error(`[Error] 網頁彈出對話框: ${message}`);
+    hasDialog = true;
     dialog.dismiss().catch(() => {});
   });
 
@@ -49,6 +76,7 @@ async function apply() {
   await page.getByRole("button", { name: org }).click();
   const container = await page.getByText(route, { exact: true }).locator("..").locator("..");
   await container.getByRole("link", { name: "進入申請" }).click();
+  if (await checkPageErrors()) hasPageError = true;
 
   /**
    *
@@ -64,6 +92,7 @@ async function apply() {
     }
   }
   await page.getByRole("button", { name: "同意", exact: true }).click();
+  if (await checkPageErrors()) hasPageError = true;
 
   /**
    *
@@ -86,6 +115,8 @@ async function apply() {
   await page.getByText("請選擇下一個地點：").waitFor({ state: "hidden" });
   if (destination) await page.locator("#con_NpaPlacesInfo").selectOption(destination);
   await page.getByRole(isYushan ? "link" : "button", { name: "下一步" }).click();
+  await page.waitForTimeout(1000);
+  if (await checkPageErrors()) hasPageError = true;
 
   /**
    * 填寫申請人與領隊資料（領隊同申請人資料）
@@ -192,9 +223,11 @@ async function apply() {
     await page.locator("#con_cbOneMan").check();
   } catch (error) {}
   await page.locator("#con_btnToStep31").click();
+  await page.waitForTimeout(1000); // 等待跳轉或錯誤訊息出現
+  if (await checkPageErrors()) hasPageError = true;
 
   if (process.env.TEST_MODE === "true") {
-    console.log("🧪 測試模式：自動關閉瀏覽器並回傳 0");
+    console.log("🧪 測試模式：自動關閉瀏覽器");
     await browser.close();
   } else {
     console.log("\n✅ 自動填寫完成！請手動檢查資料、輸入驗證碼並提交。");
@@ -202,10 +235,18 @@ async function apply() {
     // 保持瀏覽器開啟，直到使用者手動關閉
     await page.waitForEvent("close", { timeout: 0 });
   }
+
+  return { hasDialog, hasPageError };
 }
 
 apply()
-  .then(() => process.exit(0))
+  .then(({ hasDialog, hasPageError }) => {
+    if (hasDialog || hasPageError) {
+      console.error("❌ 執行過程中出現對話框或網頁錯誤，視為失敗。");
+      process.exit(1);
+    }
+    process.exit(0);
+  })
   .catch((err) => {
     console.error("執行過程中發生錯誤:", err);
     process.exit(1);
