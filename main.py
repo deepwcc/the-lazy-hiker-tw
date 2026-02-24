@@ -1,12 +1,19 @@
-import subprocess
 import os
 import sys
 import json
+import asyncio
+from src.apply import apply
 
 def select_sample():
     base_path = os.path.dirname(os.path.abspath(__file__))
     samples_dir = os.path.join(base_path, "samples")
     
+    # 優先尋找根目錄下的自定義申請檔案
+    custom_file = os.path.join(base_path, "application.json")
+    if os.path.exists(custom_file):
+        print(f"偵測到自定義申請檔案: {custom_file}")
+        return custom_file
+
     if not os.path.exists(samples_dir):
         print(f"錯誤：找不到 samples 資料夾 ({samples_dir})")
         return None
@@ -43,41 +50,25 @@ def run_apply(sample_path, test_mode=False):
     :param test_mode: 是否為測試模式 (True 會在填完後自動關閉瀏覽器)
     :return: 狀態碼 (0 為成功)
     """
-    base_path = os.path.dirname(os.path.abspath(__file__))
-    script_path = os.path.join(base_path, "src", "apply.js")
-
-    if not os.path.exists(script_path):
-        print(f"錯誤：找不到檔案 {script_path}")
-        return 1
-
     try:
         with open(sample_path, "r", encoding="utf-8") as f:
-            application_data = f.read()
-            # 驗證一下 JSON 格式
-            json.loads(application_data)
+            application_data = json.load(f)
     except Exception as e:
         print(f"讀取範本失敗: {e}")
         return 1
-
-    # 設定環境變數
-    env = os.environ.copy()
-    env["APPLICATION_DATA"] = application_data
-    if test_mode:
-        env["TEST_MODE"] = "true"
 
     try:
         if not test_mode:
             print(f"\n正在啟動自動填表流程... (範本: {os.path.basename(sample_path)})")
         
-        # 使用 subprocess 執行 Node.js 進程
-        result = subprocess.run(
-            ["node", "apply.js"],
-            cwd=os.path.join(base_path, "src"),
-            env=env
-        )
-        return result.returncode
+        # 直接呼叫 Python 函式
+        has_dialog, has_page_error = asyncio.run(apply(data=application_data, test_mode=test_mode))
+        
+        if has_dialog or has_page_error:
+            return 1
+        return 0
     except Exception as e:
-        print(f"啟動程式時發生錯誤: {e}")
+        print(f"執行時發生錯誤: {e}")
         return 1
 
 def main():
@@ -90,7 +81,7 @@ def main():
     return_code = run_apply(sample_path)
     
     if return_code == 0:
-        print("\n[Python] 腳本執行完成 (回傳碼 0)。")
+        print(f"\n[Python] 腳本執行完成 (回傳碼 0)。")
     else:
         print(f"\n[Python] 腳本執行失敗 (回傳碼 {return_code})。")
 

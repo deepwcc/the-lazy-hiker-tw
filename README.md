@@ -39,40 +39,71 @@ git clone https://github.com/deepwcc/the-lazy-hiker-tw.git
 cd the-lazy-hiker-tw
 ```
 
-### 2. 安裝 Node.js 依賴 (核心自動化套件)
-本工具的核心是基於 Playwright 運作。
+### 2. 安裝 Python 依賴 (核心自動化套件)
+本工具的核心是基於 Playwright Python 運作。
 ```bash
-npm install
-npx playwright install chromium
+pip install playwright
+playwright install chromium
 ```
 
 ### 3. 設定申請資料
 
-目前僅支援 **玉山單攻**，請先編輯範本檔案並填入您的實際資料：
-1.  開啟 `samples/application.玉山單攻.sample.json`。
-2.  將其中的個人資料（姓名、證號、生日、聯絡電話等）替換為實際內容。
-3.  儲存檔案。
+為了保護您的個人隱私，請勿直接修改 `samples/` 資料夾下的範本檔案。請按照以下步驟操作：
+
+1.  **複製範本**：將 `samples/application.玉山單攻.sample.json` 複製為 `application.json` (此檔名已被加入 `.gitignore`，不會被上傳到 GitHub)。
+    ```bash
+    cp samples/application.玉山單攻.sample.json application.json
+    ```
+2.  **填寫資料**：編輯 `application.json`，將其中的個人資料（姓名、證號、生日、聯絡電話等）替換為實際內容。
+3.  **執行腳本**：目前 `main.py` 仍預設讀取範本，建議執行時手動指定資料路徑（詳見下述）。
+
+> 💡 **重要提醒**：請務必檢查 `.gitignore` 檔案中是否包含 `application.json` 或其他包含個資的檔案路徑，避免意外將敏感資訊推送到公開倉庫。
 
 ---
 
 ## 🚀 如何執行
 
-1. 安裝 PyExecJS：
-   ```bash
-   pip install PyExecJS
-   ```
-2. 執行：
+1. 執行：
    ```bash
    python main.py
    ```
-   *執行後，請從選單中選擇 `玉山單攻 (application.玉山單攻.sample.json)`。*
+   *腳本會優先讀取根目錄下的 `application.json`。若找不到，則會引導您從 `samples/` 中選擇範本。*
 
 ---
 
-## 📄 授權與免責聲明 (License & Disclaimer)
+## Credits / 致謝
+
+本專案啟發自並參考了 [taiwan-hiking-form-filler](https://github.com/hiiamyes/taiwan-hiking-form-filler) 的設計與邏輯。感謝原作者 [hiiamyes](https://github.com/hiiamyes) 的貢獻。
+
+---
+
+## ⚠️ 免責聲明與法律警告 (Disclaimer & Legal Warning)
+
+### 1. 法律責任說明
+本專案僅供 **程式開發技術交流與學術研究** 之用。使用者在執行自動化腳本時，必須遵守中華民國法律（或其他所在地法律）。若因使用本工具導致以下法律問題，使用者須自行承擔全責，開發者概不負責：
+
+*   **《刑法》第 360 條 (妨害電腦使用罪)**：若因頻率控制不當導致目標網站系統癱瘓、運行中斷，可能觸法。
+*   **偽造文書罪**：若使用本工具填寫虛假身分證字號、姓名或偽造證明文件以獲取不正當利益（如搶占名額、抽籤），將涉及法律訴訟。
+*   **行政規章**：使用自動化程式可能違反「臺灣登山申請一站式服務網」之服務條款，官方有權撤銷申請資格並封鎖帳號。
+
+### 2. 公平性原則
+本工具之目的為「輔助」填表，而非「插隊」或「作弊」。強烈建議：
+
+*   **嚴禁** 用於商業營利或大規模代搶名額。
+*   **請勿** 繞過網站設置的驗證碼（CAPTCHA）或其他安全防護機制。
+*   **請設定合理的 延遲時間（Delay）**，模擬真人操作，避免對政府伺服器造成不必要的負擔。
+
+### 3. 個人資料保護
+本工具處理之資料包含身分證字號、手機號碼、緊急聯絡人等高度敏感個資：
+
+*   使用者應確保已獲得所有隊員之明確授權。
+*   **安全警告**：請勿將包含真實個資的 json、env 或 config 檔案推送到 GitHub 任何公開分支，否則後果自負。
+
+---
+
+## 📄 授權 (License)
 
 本專案採非商業性使用授權。
 - **禁止商業行為**：嚴禁任何形式的營利代辦或商業化使用。
-- **免責聲明**：本工具僅供參考，使用者需自行承擔申請過程中的所有風險（如申請失敗、帳號權益受損等），作者概不負責。
 
 詳情請參閱 [LICENSE](LICENSE) 檔案。
