@@ -88,7 +88,7 @@ async function apply() {
   await page.getByRole(isYushan ? "link" : "button", { name: "下一步" }).click();
 
   /**
-   *
+   * 填寫申請人與領隊資料（領隊同申請人資料）
    */
   await page
     .getByRole("checkbox", {
@@ -104,8 +104,9 @@ async function apply() {
   await page.getByRole("textbox", { name: isYushan ? "請輸入地址" : "申請人地址" }).fill(leader.addressDetail);
   await page.getByRole("textbox", { name: isYushan ? "請輸入手機" : "申請人手機" }).fill(leader.mobilePhone);
   await page.getByRole("textbox", { name: isYushan ? "請輸入電子郵件" : "申請人電子郵件" }).fill(leader.email);
-  // await page.waitForLoadState("networkidle");
-  await page.getByRole("textbox", { name: isYushan ? "請輸入證號" : "申請人證號" }).fill(leader.idNumber);
+  await page.locator("#con_apply_nation").selectOption("中華民國");
+  await page.waitForTimeout(2000); // 等待網頁可能的 AJAX 或連動更新
+  await page.locator("#con_apply_sid").fill(leader.idNumber);
   await page.evaluate(
     ({ leader }) => {
       document.querySelector('input[name="ctl00$con$apply_birthday"]').value = leader.birthday;
@@ -114,17 +115,11 @@ async function apply() {
   );
   await page.getByRole("textbox", { name: "緊急聯絡人姓名" }).fill(leader.emergencyContactName);
   await page.getByRole("textbox", { name: "緊急聯絡人電話" }).fill(leader.emergencyContactPhone);
-  const leaderSex = leader.idNumber && leader.idNumber[1] === "2" ? "女" : "男";
-  await page.locator("#con_apply_sex").selectOption(leaderSex);
-  await page.locator("#con_apply_nation").selectOption("中華民國");
-  /**
-   *
-   */
   await page.getByRole("button", { name: "   領隊資料(請展開填寫資料)" }).click();
   await page.getByRole("checkbox", { name: "同申請人" }).check();
 
   /**
-   *
+   * 填寫隊員資料
    */
   if (membersWithoutLeader.length > 0) {
     await page.getByRole("button", { name: "   隊員資料(請展開填寫資料)" }).click();
@@ -155,9 +150,9 @@ async function apply() {
     if (homePhone) await page.getByLabel(label).getByRole("textbox", { name: "請輸入電話" }).fill(homePhone);
     await page.getByLabel(label).getByRole("textbox", { name: "請輸入手機" }).fill(mobilePhone);
     await page.getByLabel(label).getByRole("textbox", { name: "請輸入電子郵件" }).fill(email);
-    await page.getByLabel(label).getByPlaceholder("請輸入證號").fill(idNumber);
-    const memberSex = idNumber && idNumber[1] === "2" ? "女" : "男";
-    await page.locator(`#con_lisMem_member_sex_${i}`).selectOption(memberSex);
+    await page.locator(`#con_lisMem_member_nation_${i}`).selectOption("中華民國");
+    await page.waitForTimeout(2000);
+    await page.locator(`#con_lisMem_member_sid_${i}`).fill(idNumber);
     await page.evaluate(
       ({ i, birthday }) => {
         document.querySelector(`input[name="ctl00$con$lisMem$ctrl${i + 1}$member_birthday"]`).value = birthday;
@@ -166,11 +161,10 @@ async function apply() {
     );
     await page.getByLabel(label).getByRole("textbox", { name: "緊急聯絡人姓名" }).fill(emergencyContactName);
     await page.getByLabel(label).getByRole("textbox", { name: "緊急聯絡人電話" }).fill(emergencyContactPhone);
-    await page.locator(`#con_lisMem_member_nation_${i}`).selectOption("中華民國");
   }
 
   /**
-   *
+   * 填寫留守人資料
    */
   await page.waitForTimeout(200);
   await page.getByRole("button", { name: "   留守人資料(請展開填寫資料)" }).click();
