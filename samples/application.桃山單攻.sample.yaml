@@ -1,16 +1,16 @@
 org: 雪霸國家公園管理處
-route: (3級) 武陵一秀或二秀 (桃山、池有山) 單日往返
-numOfDays: 1
-startDate: '2026-04-05'
-plan:
+route: (3級) 武陵一秀或二秀 (桃山、池有山) 單日往返 # 行程路線
+numOfDays: 1 # 行程天數
+startDate: '2026-04-05' # 行程日期
+plan: # 行程
 - spots: [武陵四秀登山口, 桃山登山口, 桃山, 桃山登山口, 武陵四秀登山口] # day1
-watcher:
+watcher: # 留守人
   name: 陳小明
   homePhone: 0900122111
   mobilePhone: 0900122111
   birthday: '1996-05-01'
   email: ming@gmail.com
-leader:
+leader: # 領隊
   name: 汪大名
   idNumber: A123456789
   homePhone: 0900122112
@@ -22,8 +22,8 @@ leader:
   email: daming@gmail.com
   emergencyContactName: 汪以安
   emergencyContactPhone: 0900122113
-members:
-- name: 潘美美
+members: # 隊員
+- name: 潘美美 # 隊員 1
   idNumber: A121212127
   homePhone: 0900122114
   mobilePhone: 0900122114

@@ -140,6 +140,7 @@ async def apply(data=None, test_mode=None):
                 await page.get_by_text(f"第{i + 1}天行程").wait_for(state="visible")
             for spot in day.get("spots", []):
                 await page.get_by_role("radio", name=re.compile(spot, re.IGNORECASE)).check()
+                await asyncio.sleep(0.5)
             
             await asyncio.sleep(0.5)
             await page.get_by_role("link", name="  完成路線").click()

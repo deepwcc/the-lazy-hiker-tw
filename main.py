@@ -20,8 +20,13 @@ def select_sample():
         print(f"錯誤：找不到 samples 資料夾 ({samples_dir})")
         return None
 
-    # 目前支援玉山主東兩天、桃山單攻，其餘範本暫不顯示
-    supported_list = ["application.玉山主東兩天.sample.yaml", "application.桃山單攻.sample.yaml"]
+    # 目前支援的範本列表
+    supported_list = [
+        "application.玉山主東兩天.sample.yaml",
+        "application.桃山單攻.sample.yaml",
+        "application.雪山主東三天.sample.yaml",
+        "application.聖稜線O型.sample.yaml",
+    ]
     samples = [f for f in os.listdir(samples_dir) if f in supported_list]
     
     if not samples:
@@ -30,8 +35,8 @@ def select_sample():
 
     print("\n請選擇要使用的申請範本：")
     for i, name in enumerate(samples, 1):
-        # 移除 .sample.json 讓顯示更乾淨
-        display_name = name.replace("application.", "").replace(".sample.json", "")
+        # 移除前綴與後綴讓顯示更乾淨
+        display_name = name.replace("application.", "").replace(".sample.yaml", "").replace(".sample.yml", "").replace(".sample.json", "")
         print(f"{i}. {display_name} ({name})")
 
     while True:
