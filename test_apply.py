@@ -9,7 +9,7 @@ def run_test_for_sample(sample_path):
     通用測試函式
     測試通過條件：
     1. 網頁填寫過程沒有任何 dialog 或錯誤回傳
-    2. apply.py 回傳 0
+    2. 各國家公園對應的 apply_*.py 回傳 0
     """
     sample_name = os.path.basename(sample_path)
     print(f"\n[Test] 開始執行 {sample_name} 自動填表測試...")
@@ -35,7 +35,13 @@ def test_samples(filter_pattern=None, run_all=False):
         print(f"錯誤：找不到 samples 資料夾 ({samples_dir})")
         sys.exit(1)
         
-    sample_files = [f for f in os.listdir(samples_dir) if f.endswith((".yaml", ".yml"))]
+    sample_files = []
+    for root, dirs, files in os.walk(samples_dir):
+        for f in files:
+            if f.endswith((".yaml", ".yml")):
+                # 取得相對路徑
+                rel_path = os.path.relpath(os.path.join(root, f), samples_dir)
+                sample_files.append(rel_path)
     sample_files.sort()
     
     if not sample_files:

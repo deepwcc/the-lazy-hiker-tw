@@ -1,6 +1,5 @@
-node_modules/
 .DS_Store
-src/application.json
+samples/private/
 __pycache__/
 *.pyc
 .env

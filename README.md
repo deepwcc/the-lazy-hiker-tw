@@ -39,16 +39,14 @@ playwright install chromium
 
 ### 3. 設定申請資料
 
-為了保護您的個人隱私，請勿直接修改 `samples/` 資料夾下的範本檔案。請按照以下步驟操作：
+為了保護您的個人隱私，請勿直接修改 `samples/public` 資料夾下的範本檔案。請按照以下步驟操作：
 
-1.  **複製範本**：將 `samples/application.玉山主東兩天.sample.yaml` 複製為 `application.yaml` (此檔名已被加入 `.gitignore`，不會被上傳到 GitHub)。
+1.  **複製範本**：將 `samples/public/application.玉山主東兩天.sample.yaml` 複製為 `samples/private/application.玉山主東兩天.sample.yaml` (此資料夾已被加入 `.gitignore`，不會被上傳到 GitHub)。
     ```bash
-    cp samples/application.玉山主東兩天.sample.yaml application.yaml
+    cp samples/public/application.玉山主東兩天.sample.yaml samples/private/application.玉山主東兩天.sample.yaml
     ```
-2.  **填寫資料**：編輯 `application.yaml`，將其中的個人資料（姓名、證號、生日、聯絡電話等）替換為實際內容。
-3.  **執行腳本**：目前 `main.py` 仍預設讀取範本，建議執行時手動指定資料路徑（詳見下述）。
-
-> 💡 **重要提醒**：請務必檢查 `.gitignore` 檔案中是否包含 `application.yaml` 或其他包含個資的檔案路徑，避免意外將敏感資訊推送到公開倉庫。
+2.  **填寫資料**：編輯 `samples/private/application.玉山主東兩天.sample.yaml`，將其中的個人資料（姓名、證號、生日、聯絡電話等）替換為實際內容。
+3.  **執行腳本**：詳見下述。
 
 ---
 
@@ -56,19 +54,9 @@ playwright install chromium
 
 1. 執行：
    ```bash
-   python main.py
+   # 指定範本路徑
+   python main.py -p samples/public/application.玉山主東兩天.sample.yaml
    ```
-   *腳本會優先讀取根目錄下的 `application.json`。若找不到，則會引導您從 `samples/` 中選擇範本。*
-
-2. 執行測試：
-   ```bash
-   # 執行所有測試範本
-   python test_apply.py --all
-   
-   # 依關鍵字篩選測試範本
-   python test_apply.py --filter 玉山
-   ```
-
 ---
 
 ## Credits / 致謝

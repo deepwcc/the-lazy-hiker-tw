@@ -4,6 +4,7 @@ import yaml
 import asyncio
 import sys
 import re
+from datetime import datetime
 from playwright.async_api import async_playwright
 
 async def check_page_errors(page):
@@ -66,7 +67,7 @@ async def apply(data=None, test_mode=None):
     members_without_leader = data.get("members", [])
     start_date = data.get("startDate")
     
-    is_yushan = org == "玉山國家公園管理處"
+    is_yushan = True
     
     # 如果 leader 是空的，嘗試從 members 找 (相容舊格式)
     if not leader and members_without_leader:
@@ -126,8 +127,9 @@ async def apply(data=None, test_mode=None):
         # 3. 填寫行程資料
         current_step = "填寫行程資料 - 隊伍名稱"
         team_name_label = "隊名" if is_yushan else "隊伍名稱"
+        now_str = datetime.now().strftime("%H%M%S")
         await page.get_by_role("textbox", name=team_name_label).fill(
-            f"{leader['name']}-{route}-{start_date}-{num_of_days}days"
+            f"{leader['name']}-{route}-{start_date}-{now_str}"
         )
 
         current_step = "填寫行程資料 - 天數與日期"

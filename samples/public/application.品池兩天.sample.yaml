@@ -1,0 +1,37 @@
+org: 雪霸國家公園管理處
+route: (4級) 武陵四秀線 # 行程路線
+numOfDays: 2 # 行程天數
+startDate: '2026-05-09' # 行程日期
+plan: # 行程
+- spots: [武陵四秀登山口, 池有山登山口, 池有山, 新達營地]
+- spots: [品田山, 新達營地, 池有山, 池有山登山口, 武陵四秀登山口]
+watcher: # 留守人
+  name: 陳小明
+  homePhone: 0900122111
+  mobilePhone: 0900122111
+  birthday: '1996-05-01'
+  email: ming@gmail.com
+leader: # 領隊
+  name: 汪大名
+  idNumber: A123456789
+  homePhone: 0900122112
+  mobilePhone: 0900122112
+  birthday: '2000-06-06'
+  city: 台北市
+  district: 信義區
+  addressDetail: 信義路五段7號
+  email: daming@gmail.com
+  emergencyContactName: 汪以安
+  emergencyContactPhone: 0900122113
+members: # 隊員
+- name: 潘美美 # 隊員 1
+  idNumber: A121212127
+  homePhone: 0900122114
+  mobilePhone: 0900122114
+  birthday: '2000-05-05'
+  city: 台北市
+  district: 文山區
+  addressDetail: 指南路二段64號
+  email: meimei@gmail.com
+  emergencyContactName: 潘美媽
+  emergencyContactPhone: 0900122115
