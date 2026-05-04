@@ -29,6 +29,9 @@ def run_apply(sample_path, test_mode=False):
     try:
         if not test_mode:
             print(f"\n正在啟動自動填表流程... (範本: {os.path.basename(sample_path)})")
+            dialog_mode = os.environ.get("DIALOG_MODE")
+            if dialog_mode:
+                print(f"Dialog 模式: {dialog_mode} (manual/accept/dismiss)")
         
         # 取得國家公園名稱來判斷要用哪個 apply
         org = application_data.get("org", "")
