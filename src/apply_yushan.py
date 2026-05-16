@@ -86,15 +86,37 @@ async def apply(data=None, test_mode=None):
         context = await browser.new_context(no_viewport=True)
         page = await context.new_page()
 
+        dialog_mode = os.environ.get("DIALOG_MODE", "manual" if not test_mode else "dismiss").strip().lower()
+
+        warning_dialog_keywords = [
+            "請詳實填寫隊員資料勿重覆",
+            "草稿僅保留",
+            "尚未送出，因此無法為您保留名額",
+            "申請開放申請時間為07:00-23:00",
+            "請輸入驗證碼",
+        ]
+
         def handle_dialog(dialog):
             nonlocal has_dialog, current_step
             msg = dialog.message
-            if "請詳實填寫隊員資料勿重覆" in msg:
-                print(f"[Warning] 網頁彈出對話框 (已略過): {msg}", file=sys.stderr)
+            is_warning = any(k in msg for k in warning_dialog_keywords)
+            if is_warning:
+                print(f"[Warning] 網頁彈出對話框: {msg}", file=sys.stderr)
             else:
                 print(f"[Error] 在「{current_step}」時彈出對話框: {msg}", file=sys.stderr)
                 has_dialog = True
-            asyncio.create_task(dialog.dismiss())
+
+            if dialog_mode == "manual":
+                return
+
+            if dialog.type == "beforeunload":
+                asyncio.create_task(dialog.accept())
+                return
+
+            if dialog_mode == "accept":
+                asyncio.create_task(dialog.accept())
+            else:
+                asyncio.create_task(dialog.dismiss())
 
         page.on("dialog", handle_dialog)
 

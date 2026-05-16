@@ -85,15 +85,41 @@ async def apply(data=None, test_mode=None):
         context = await browser.new_context(no_viewport=True)
         page = await context.new_page()
 
+        dialog_mode = os.environ.get("DIALOG_MODE", "manual" if not test_mode else "dismiss").strip().lower()
+
+        warning_dialog_keywords = [
+            "請詳實填寫隊員資料勿重覆",
+            "草稿僅保留",
+            "尚未送出，因此無法為您保留名額",
+            "申請開放申請時間為07:00-23:00",
+            "請輸入驗證碼",
+        ]
+
         def handle_dialog(dialog):
             nonlocal has_dialog, current_step
             msg = dialog.message
-            if "請詳實填寫隊員資料勿重覆" in msg:
-                print(f"[Warning] 網頁彈出對話框 (已略過): {msg}", file=sys.stderr)
+            is_warning = any(k in msg for k in warning_dialog_keywords)
+            if is_warning:
+                print(f"[Warning] 網頁彈出對話框: {msg}", file=sys.stderr)
             else:
                 print(f"[Error] 在「{current_step}」時彈出對話框: {msg}", file=sys.stderr)
                 has_dialog = True
-            asyncio.create_task(dialog.dismiss())
+
+            # DIALOG_MODE:
+            # - manual: 讓彈窗留在瀏覽器 UI，由使用者手動點選
+            # - accept: 程式自動按 OK (accept)
+            # - dismiss: 程式自動按 Cancel/關閉 (dismiss)
+            if dialog_mode == "manual":
+                return
+
+            if dialog.type == "beforeunload":
+                asyncio.create_task(dialog.accept())
+                return
+
+            if dialog_mode == "accept":
+                asyncio.create_task(dialog.accept())
+            else:
+                asyncio.create_task(dialog.dismiss())
 
         page.on("dialog", handle_dialog)
 
@@ -142,7 +168,11 @@ async def apply(data=None, test_mode=None):
             current_step = f"填寫行程資料 - 第 {i+1} 天行程"
             # print(current_step)
             if i > 0:
-                await page.get_by_text(f"第：{i + 1}天行程").wait_for(state="visible")
+                # 不同路線的分天標題文字略有差異：
+                # - 一般路線：第：2天行程
+                # - 南湖大山線新制：第2天行程:
+                day_header_re = re.compile(rf"第[：:]?\s*{i + 1}\s*天行程[：:]?", re.UNICODE)
+                await page.get_by_text(day_header_re).wait_for(state="visible")
             # print(current_step)
             for spot in day.get("spots", []):
                 # print(spot)
