@@ -66,8 +66,6 @@ async def apply(data=None, test_mode=None):
     members_without_leader = data.get("members", [])
     start_date = data.get("startDate")
     
-    is_yushan = org == "玉山國家公園管理處"
-    
     # 如果 leader 是空的，嘗試從 members 找 (相容舊格式)
     if not leader and members_without_leader:
         leader = next((m for m in members_without_leader if m.get("leader")), None)
@@ -188,10 +186,9 @@ async def apply(data=None, test_mode=None):
             await page.locator("#con_NpaPlacesInfo").select_option(destination)
         
         current_step = "填寫行程資料 - 點擊下一步"
-        next_step_role = "link" if is_yushan else "button"
         await asyncio.sleep(0.5)
         # input("請按 Enter 鍵繼續...") # for debug
-        await page.get_by_role(next_step_role, name="下一步").click()
+        await page.get_by_role("button", name="下一步").click()
         await asyncio.sleep(0.5)
         if await check_page_errors(page):
             has_page_error = True
@@ -258,8 +255,7 @@ async def apply(data=None, test_mode=None):
         if members_without_leader:
             current_step = "填寫隊員資料 - 展開區塊"
             await page.get_by_role("button", name=" 隊員資料 (請展開填寫資料)").click()
-            if not is_yushan:
-                await page.locator("#con_step2_member_keytype").check()
+            await page.locator("#con_step2_member_keytype").check()
             await page.wait_for_load_state("networkidle")
 
             # <span style="color: #0000cc;">請確認領隊或隊員同意委託申請人代理蒐集當事人個人資料，並委託其上網向國家公園管理處提出登山申請，以免違反相關法令。</span>
@@ -338,13 +334,8 @@ async def apply(data=None, test_mode=None):
         await asyncio.sleep(0.5)
         
         current_step = "填寫留守人資料 - 基本欄位"
-        # watcher_name_label = "請輸入姓名" if is_yushan else "留守人姓名"
         await watcher_section.locator("#con_step2_stay_name").fill(watcher['name']) #con_step2_stay_name
-        
-        # watcher_mobile_label = "請輸入手機(或電話)" if is_yushan else "留守人手機"
         await watcher_section.locator("#con_step2_stay_mobile").fill(watcher['mobilePhone']) #con_step2_stay_mobile
-        
-        # if not is_yushan:
         await watcher_section.locator("#con_step2_stay_tel").fill(watcher.get('homePhone') or watcher['mobilePhone']) #con_step2_stay_tel
         
         current_step = "填寫留守人資料 - Email 與生日"

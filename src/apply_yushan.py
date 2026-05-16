@@ -66,8 +66,7 @@ async def apply(data=None, test_mode=None):
     leader = data.get("leader", {})
     members_without_leader = data.get("members", [])
     start_date = data.get("startDate")
-    
-    is_yushan = True
+    team_name = data.get("teamName")
     
     # 如果 leader 是空的，嘗試從 members 找 (相容舊格式)
     if not leader and members_without_leader:
@@ -148,10 +147,11 @@ async def apply(data=None, test_mode=None):
 
         # 3. 填寫行程資料
         current_step = "填寫行程資料 - 隊伍名稱"
-        team_name_label = "隊名" if is_yushan else "隊伍名稱"
+        team_name_label = "隊名"
+        display_team_name = team_name or leader.get("name", "")
         now_str = datetime.now().strftime("%H%M%S")
         await page.get_by_role("textbox", name=team_name_label).fill(
-            f"{leader['name']}-{route}-{start_date}-{now_str}"
+            f"{display_team_name}-{route}-{start_date}-{now_str}"
         )
 
         current_step = "填寫行程資料 - 天數與日期"
@@ -180,8 +180,7 @@ async def apply(data=None, test_mode=None):
             await page.locator("#con_NpaPlacesInfo").select_option(destination)
         
         current_step = "填寫行程資料 - 點擊下一步"
-        next_step_role = "link" if is_yushan else "button"
-        await page.get_by_role(next_step_role, name="下一步").click()
+        await page.get_by_role("link", name="下一步").click()
         await asyncio.sleep(0.5)
         if await check_page_errors(page):
             has_page_error = True
@@ -190,11 +189,11 @@ async def apply(data=None, test_mode=None):
         current_step = "填寫申請人資料 - 同意委託"
         await page.get_by_role("checkbox", name="請確認領隊或隊員同意委託申請人代理蒐集當事人個人資料，並委託其上網向國家公園管理處提出登山申請相關事宜，以免違反相關法令。").check()
         
-        name_label = "請輸入姓名" if is_yushan else "申請人姓名"
-        phone_label = "請輸入電話" if is_yushan else "申請人電話"
-        addr_label = "請輸入地址" if is_yushan else "申請人地址"
-        mobile_label = "請輸入手機" if is_yushan else "申請人手機"
-        email_label = "請輸入電子郵件" if is_yushan else "申請人電子郵件"
+        name_label = "請輸入姓名"
+        phone_label = "請輸入電話"
+        addr_label = "請輸入地址"
+        mobile_label = "請輸入手機"
+        email_label = "請輸入電子郵件"
 
         current_step = "填寫申請人資料 - 基本欄位"
         await page.get_by_role("textbox", name=name_label).fill(leader['name'])
@@ -244,8 +243,6 @@ async def apply(data=None, test_mode=None):
         if members_without_leader:
             current_step = "填寫隊員資料 - 展開區塊"
             await page.get_by_role("button", name="   隊員資料(請展開填寫資料)").click()
-            if not is_yushan:
-                await page.locator("#con_member_keytype").check()
             await page.wait_for_load_state("networkidle")
             
             for i, member in enumerate(members_without_leader):
@@ -253,7 +250,7 @@ async def apply(data=None, test_mode=None):
                 current_step = f"填寫隊員資料 - 新增第 {i+1} 位隊員"
                 await page.get_by_role("link", name=re.compile("新增隊員", re.IGNORECASE)).click()
                 await asyncio.sleep(1) # 等待網頁產生新欄位
-                if is_yushan: await page.get_by_role("button", name=re.compile(label, re.IGNORECASE)).click()
+                await page.get_by_role("button", name=re.compile(label, re.IGNORECASE)).click()
 
                 member_section = page.get_by_label(label)
                 # 等待區塊可見再開始填寫
@@ -307,14 +304,8 @@ async def apply(data=None, test_mode=None):
         watcher_section = page.get_by_label("留守人資料(請展開填寫資料)")
         
         current_step = "填寫留守人資料 - 基本欄位"
-        watcher_name_label = "請輸入姓名" if is_yushan else "留守人姓名"
-        await watcher_section.get_by_role("textbox", name=watcher_name_label).fill(watcher['name'])
-        
-        watcher_mobile_label = "請輸入手機(或電話)" if is_yushan else "留守人手機"
-        await watcher_section.get_by_role("textbox", name=watcher_mobile_label).fill(watcher['mobilePhone'])
-        
-        if not is_yushan:
-            await page.get_by_role("textbox", name="留守人電話").fill(watcher.get('homePhone') or watcher['mobilePhone'])
+        await watcher_section.get_by_role("textbox", name="請輸入姓名").fill(watcher['name'])
+        await watcher_section.get_by_role("textbox", name="請輸入手機(或電話)").fill(watcher['mobilePhone'])
         
         current_step = "填寫留守人資料 - Email 與生日"
         await page.locator("#con_stay_email").fill(watcher['email'])

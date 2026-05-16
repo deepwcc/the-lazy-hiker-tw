@@ -2,6 +2,7 @@ org: 雪霸國家公園管理處
 route: (3級) 雪山主峰(多日行程)
 numOfDays: 3 # 行程天數 
 startDate: '2026-04-01' # 行程日期
+teamName: 帥到分手 # 隊名
 plan: # 行程
 - spots: [雪山登山口, 七卡山莊] # day1
 - spots: [雪山東峰, 三六九臨時營地] # day2 
