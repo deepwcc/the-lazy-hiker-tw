@@ -163,8 +163,13 @@ async def apply(data=None, test_mode=None):
             if i > 0:
                 await page.get_by_text(f"第{i + 1}天行程").wait_for(state="visible")
             for spot in day.get("spots", []):
-                await page.get_by_role("radio", name=re.compile(spot, re.IGNORECASE)).check()
+                escaped_spot = re.escape(spot).replace("/", r"\/")
+                await page.get_by_role(
+                    "radio",
+                    name=re.compile(rf"{escaped_spot}(?![\u4e00-\u9fff])", re.IGNORECASE),
+                ).check()
                 await asyncio.sleep(0.5)
+                # input("請按 Enter 鍵繼續...") # for debug
             
             await asyncio.sleep(0.5)
             await page.get_by_role("link", name="  完成路線").click()
