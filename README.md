@@ -9,7 +9,10 @@
 ## 🔍 功能特色
 
 *   **自動填表**：自動填寫隊伍、行程、領隊、隊員及留守人資料。
-*   **目前支援路線**：目前支援 **玉山主東兩天**、**桃山單攻**、**雪山主東三天**、**聖稜線O型** 等選項。
+*   **目前支援路線**（依管理處）：
+    *   **玉山國家公園**：玉山主東兩天
+    *   **雪霸國家公園**：桃山單攻、品池兩天、雪山主東三天、聖稜線O型
+    *   **太魯閣國家公園**：奇萊主北兩天、南湖四峰
 *   **手動最後確認**：腳本填寫完畢後，您仍可手動檢查資料、輸入驗證碼並自行點擊提交。
 
 ---
@@ -41,21 +44,47 @@ playwright install chromium
 
 為了保護您的個人隱私，請勿直接修改 `samples/public` 資料夾下的範本檔案。請按照以下步驟操作：
 
-1.  **複製範本**：將 `samples/public/application.玉山主東兩天.sample.yaml` 複製為 `samples/private/application.玉山主東兩天.sample.yaml` (此資料夾已被加入 `.gitignore`，不會被上傳到 GitHub)。
+1.  **複製範本**：從 `samples/public/` 選擇對應路線的 `.sample.yaml`，複製到 `samples/private/`（此資料夾已被加入 `.gitignore`，不會被上傳到 GitHub）。
     ```bash
-    cp samples/public/application.玉山主東兩天.sample.yaml samples/private/application.玉山主東兩天.sample.yaml
+    # 例：南湖四峰
+    cp samples/public/application.南湖四峰.sample.yaml samples/private/application.南湖四峰.yaml
     ```
-2.  **填寫資料**：編輯 `samples/private/application.玉山主東兩天.sample.yaml`，將其中的個人資料（姓名、證號、生日、聯絡電話等）替換為實際內容。
+2.  **填寫資料**：編輯 `samples/private/` 下的檔案，將個人資料（姓名、證號、生日、聯絡電話、行程日期與景點等）替換為實際內容。
 3.  **執行腳本**：詳見下述。
+
+公開範本一覽（`samples/public/`）：
+
+| 檔名 | 管理處 |
+|------|--------|
+| `application.玉山主東兩天.sample.yaml` | 玉山 |
+| `application.桃山單攻.sample.yaml` | 雪霸 |
+| `application.品池兩天.sample.yaml` | 雪霸 |
+| `application.雪山主東三天.sample.yaml` | 雪霸 |
+| `application.聖稜線O型.sample.yaml` | 雪霸 |
+| `application.奇萊主北兩天.sample.yaml` | 太魯閣 |
+| `application.南湖四峰.sample.yaml` | 太魯閣 |
 
 ---
 
 ## 🚀 如何執行
 
-1. 執行：
+1. 執行（請改為你的 `samples/private/` 路徑；以下僅示範公開範本）：
    ```bash
-   # 指定範本路徑
-   python main.py -p samples/public/application.玉山主東兩天.sample.yaml
+   python main.py -p samples/private/application.南湖四峰.yaml
+   ```
+
+2. **（選用）Dialog 模式**：預設在非測試模式下，網頁彈窗會留在瀏覽器由你手動點選。可透過環境變數調整：
+   ```bash
+   # manual（預設）：不自動點選，由使用者處理
+   # accept：程式自動按 OK
+   # dismiss：程式自動關閉（測試模式預設）
+   DIALOG_MODE=accept python main.py -p samples/private/application.南湖四峰.yaml
+   ```
+
+3. **自動化測試**（需已安裝 Playwright 且網路可連申請網站）：
+   ```bash
+   python test_apply.py --all
+   python test_apply.py --filter 南湖
    ```
 ---
 

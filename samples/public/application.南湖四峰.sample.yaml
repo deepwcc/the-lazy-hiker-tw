@@ -1,0 +1,39 @@
+org: 太魯閣國家公園管理處
+route: 南湖大山線(因承載量異動，入園日期為114.7.1以後者適用) # 行程路線
+numOfDays: 4 # 行程天數
+startDate: '2026-07-01' # 行程日期
+plan: # 行程
+- spots: [思源埡口, 5.1K登山口, 多加屯山登山口, 木杆鞍部, 雲稜山屋]
+- spots: [審馬陣登山口, 審馬陣山屋, 南湖北山岔口, 南湖北峰, 南湖山屋]
+- spots: [南湖主峰鞍部, 南湖大山, 南湖主峰鞍部, 南湖山屋, 南湖北峰, 南湖北山岔口, 審馬陣山屋, 審馬陣登山口, 雲稜山屋]
+- spots: [木杆鞍部, 多加屯山登山口, 5.1K登山口, 思源埡口]
+watcher: # 留守人
+  name: 陳小明
+  homePhone: 0900122111
+  mobilePhone: 0900122111
+  birthday: '1996-05-01'
+  email: ming@gmail.com
+leader: # 領隊
+  name: 汪大名
+  idNumber: A123456789
+  homePhone: 0900122112
+  mobilePhone: 0900122112
+  birthday: '2000-06-06'
+  city: 台北市
+  district: 信義區
+  addressDetail: 信義路五段7號
+  email: daming@gmail.com
+  emergencyContactName: 汪以安
+  emergencyContactPhone: 0900122113
+members: # 隊員
+- name: 潘美美 # 隊員 1
+  idNumber: A121212127
+  homePhone: 0900122114
+  mobilePhone: 0900122114
+  birthday: '2000-05-05'
+  city: 台北市
+  district: 文山區
+  addressDetail: 指南路二段64號
+  email: meimei@gmail.com
+  emergencyContactName: 潘美媽
+  emergencyContactPhone: 0900122115
